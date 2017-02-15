@@ -1,10 +1,12 @@
 package abhirojpanwar.wear;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.format.Time;
 
 /**
@@ -14,48 +16,51 @@ import android.text.format.Time;
 public class SimpleWatchFace {
 
     private static final String TIME_FORMAT_WITHOUT_SECONDS = "%02d:%02d";
-    private static final String TIME_FORMAT_WITH_SECONDS = TIME_FORMAT_WITHOUT_SECONDS + ":%02d";
-    private static final String DATE_FORMAT = "%02d.%02d.%d";
+    private static final String DATE_FORMAT = "%02d/%02d/%d";
 
-    private final Paint timePaint;
-    private final Paint datePaint;
+
+    Typeface NORMAL_TYPEFACE=Typeface.create(Typeface.SANS_SERIF,Typeface.NORMAL);
+
+    Paint mTextTimePaint;
+    Paint mTextDatePaint;
+    Paint mTextTempLowPaint;
+    Paint mTextTempHighPaint;
+
+    float TimeOffsetX;
+    float TimeOffsetY;
+    float DateOffSetX;
+    float DateOffsetY;
+    float TempOffsetX;
+    float TempOffsetY;
+    Resources resources;
+    Context context;
+
     private final Time time;
 
     private boolean shouldShowSeconds = true;
 
     public static SimpleWatchFace newInstance(Context context) {
-        Paint timePaint = new Paint();
-        timePaint.setColor(Color.WHITE);
-        timePaint.setTextSize(context.getResources().getDimension(R.dimen.time_size));
-        timePaint.setAntiAlias(true);
-
-        Paint datePaint = new Paint();
-        datePaint.setColor(Color.WHITE);
-        datePaint.setTextSize(context.getResources().getDimension(R.dimen.date_size));
-        datePaint.setAntiAlias(true);
-
-        return new SimpleWatchFace(timePaint, datePaint, new Time());
+        return new SimpleWatchFace(context, new Time());
     }
 
-    SimpleWatchFace(Paint timePaint, Paint datePaint, Time time) {
-        this.timePaint = timePaint;
-        this.datePaint = datePaint;
+    SimpleWatchFace(Context context, Time time) {
+        mTextTimePaint=createTimeObject();
+        mTextDatePaint=createDateObject();
+        this.context=context;
+        resources=context.getResources();
         this.time = time;
+        calculateOffsets();
     }
 
     public void draw(Canvas canvas, Rect bounds) {
         time.setToNow();
         canvas.drawColor(Color.parseColor("#42A5F5"));
 
-        String timeText = String.format(shouldShowSeconds ? TIME_FORMAT_WITH_SECONDS : TIME_FORMAT_WITHOUT_SECONDS, time.hour, time.minute, time.second);
-        float timeXOffset = computeXOffset(timeText, timePaint, bounds);
-        float timeYOffset = computeTimeYOffset(timeText, timePaint, bounds);
-        canvas.drawText(timeText, timeXOffset, timeYOffset, timePaint);
+        String timeText = String.format( TIME_FORMAT_WITHOUT_SECONDS, time.hour, time.minute);
+        canvas.drawText(timeText,bounds.centerX()-TimeOffsetX, TimeOffsetY, mTextTimePaint);
 
         String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
-        float dateXOffset = computeXOffset(dateText, datePaint, bounds);
-        float dateYOffset = computeDateYOffset(dateText, datePaint);
-        canvas.drawText(dateText, dateXOffset, timeYOffset + dateYOffset, datePaint);
+        canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
     }
 
     private float computeXOffset(String text, Paint paint, Rect watchBounds) {
@@ -79,16 +84,51 @@ public class SimpleWatchFace {
     }
 
     public void setAntiAlias(boolean antiAlias) {
-        timePaint.setAntiAlias(antiAlias);
-        datePaint.setAntiAlias(antiAlias);
+        mTextDatePaint.setAntiAlias(antiAlias);
+        mTextTimePaint.setAntiAlias(antiAlias);
     }
 
     public void setColor(int color) {
-        timePaint.setColor(color);
-        datePaint.setColor(color);
+        mTextDatePaint.setColor(color);
+        mTextTimePaint.setColor(color);
     }
 
     public void setShowSeconds(boolean showSeconds) {
         shouldShowSeconds = showSeconds;
     }
+
+    void calculateOffsets(){
+        TimeOffsetX=mTextTimePaint.measureText("12:60")/2;
+        DateOffSetX=mTextDatePaint.measureText("14/02/2017")/2;
+        TimeOffsetY=resources.getDimension(R.dimen.timeoffset_y);
+        DateOffsetY=resources.getDimension(R.dimen.dateoffset_y);
+        TempOffsetY=resources.getDimension(R.dimen.weatheroffset_y);
+    }
+
+    Paint createTimeObject()
+    {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(NORMAL_TYPEFACE);
+        return paint;
+    }
+
+    Paint createDateObject()
+    {
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(NORMAL_TYPEFACE);
+        return paint;
+    }
+
+    Paint createTempObject(){
+        Paint paint=new Paint();
+        paint.setAntiAlias(true);
+        paint.setTypeface(NORMAL_TYPEFACE);
+        paint.setTextSize(R.dimen.temp_size);
+        return paint;
+    }
+
 }

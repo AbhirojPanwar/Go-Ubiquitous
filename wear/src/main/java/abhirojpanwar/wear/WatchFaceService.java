@@ -23,6 +23,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     class WatchEngine extends CanvasWatchFaceService.Engine{
 
+
+
+
+
         private final long TICK_PERIOD_MILLIS = TimeUnit.SECONDS.toMillis(1);
         private Handler timeTick;
         private SimpleWatchFace watchFace;
@@ -37,10 +41,16 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setShowSystemUiTime(false)
                     .build());
 
+
+
             timeTick = new Handler(Looper.myLooper());
             startTimerIfNecessary();
             watchFace = SimpleWatchFace.newInstance(WatchFaceService.this);
+
+
         }
+
+
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {

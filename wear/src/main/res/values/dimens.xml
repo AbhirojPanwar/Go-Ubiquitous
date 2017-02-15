@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <dimen name="time_size">30dp</dimen>
-    <dimen name="date_size">26dp</dimen>
+    <dimen name="date_size">15dp</dimen>
+    <dimen name="temp_size">30dp</dimen>
+
+    <dimen name="timeoffset_y">100dp</dimen>
+    <dimen name="dateoffset_y">120dp</dimen>
+    <dimen name="weatheroffset_y">150dp</dimen>
 </resources>
