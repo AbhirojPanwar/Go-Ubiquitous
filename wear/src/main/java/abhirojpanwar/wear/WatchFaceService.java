@@ -190,7 +190,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-            Log.e(TAG,connectionResult.getErrorMessage());
+            Log.e(TAG, String.valueOf(connectionResult.getErrorCode()));
         }
 
         @Override

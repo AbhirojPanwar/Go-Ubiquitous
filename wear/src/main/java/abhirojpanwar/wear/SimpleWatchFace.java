@@ -109,6 +109,7 @@ public class SimpleWatchFace {
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         paint.setTypeface(NORMAL_TYPEFACE);
+        paint.setTextSize(context.getResources().getDimension(R.dimen.time_size));
         return paint;
     }
 
@@ -117,6 +118,7 @@ public class SimpleWatchFace {
         Paint paint=new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
+        paint.setTextSize(context.getResources().getDimension(R.dimen.date_size));
         paint.setTypeface(NORMAL_TYPEFACE);
         return paint;
     }
