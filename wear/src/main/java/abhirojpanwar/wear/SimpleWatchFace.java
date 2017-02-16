@@ -26,8 +26,7 @@ public class SimpleWatchFace {
 
     Paint mTextTimePaint;
     Paint mTextDatePaint;
-    Paint mTextTempLowPaint;
-    Paint mTextTempHighPaint;
+    Paint mTextWeatherPaint;
 
     float TimeOffsetX;
     float TimeOffsetY;
@@ -40,9 +39,13 @@ public class SimpleWatchFace {
     float timeSize;
     float dateSize;
 
+    String hightemp;
+    String lowtemp;
+    String weatherid;
+    boolean ambient;
+
     private final Time time;
 
-    private boolean shouldShowSeconds = true;
 
     public static SimpleWatchFace newInstance(Context context, float timeSize, float dateSize) {
         return new SimpleWatchFace(context, new Time(),timeSize,dateSize);
@@ -60,7 +63,7 @@ public class SimpleWatchFace {
         calculateOffsets();
     }
 
-    public void draw(Canvas canvas, Rect bounds) {
+    public void draw(Canvas canvas, Rect bounds,String Hightemp,String Lowtemp,String weatherId) {
         time.setToNow();
         canvas.drawColor(Color.parseColor("#42A5F5"));
 
@@ -69,7 +72,17 @@ public class SimpleWatchFace {
 
         String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
         canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
+
+        if(hightemp!=null && lowtemp!=null && weatherid!=null)
+        {
+            float highTextSize =mTextWeatherPaint.measureText(Hightemp);
+            float xOffset = bounds.centerX() - (highTextSize / 2);
+            canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
+            canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
+
+        }
     }
+
 
     public void setAntiAlias(boolean antiAlias) {
         mTextDatePaint.setAntiAlias(antiAlias);
@@ -81,9 +94,6 @@ public class SimpleWatchFace {
         mTextTimePaint.setColor(color);
     }
 
-    public void setShowSeconds(boolean showSeconds) {
-        shouldShowSeconds = showSeconds;
-    }
 
     void calculateOffsets(){
         TimeOffsetX=mTextTimePaint.measureText("12:60")/2;
@@ -111,7 +121,7 @@ public class SimpleWatchFace {
         return paint;
     }
 
-    Paint createTempObject(){
+    Paint createWeatherObject(){
         Paint paint=new Paint();
         paint.setAntiAlias(true);
         paint.setTypeface(NORMAL_TYPEFACE);
