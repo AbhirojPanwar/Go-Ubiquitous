@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements
 
     private final String TAG = MainActivity.class.getSimpleName();
 
+
     /*
      * The columns of data that we are interested in displaying within our MainActivity's list of
      * weather data.
      */
+
+
     public static final String[] MAIN_FORECAST_PROJECTION = {
             WeatherContract.WeatherEntry.COLUMN_DATE,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);
+
 
 
         showLoading();
@@ -343,4 +347,6 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

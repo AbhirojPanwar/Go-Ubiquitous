@@ -8,12 +8,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.format.Time;
+import android.util.Log;
 
 /**
  * Created by Abhiroj on 2/15/2017.
  */
 
 public class SimpleWatchFace {
+
+    private static final String TAG="SimpleWatchFaceClass";
 
     private static final String TIME_FORMAT_WITHOUT_SECONDS = "%02d:%02d";
     private static final String DATE_FORMAT = "%02d/%02d/%d";
@@ -34,20 +37,25 @@ public class SimpleWatchFace {
     float TempOffsetY;
     Resources resources;
     Context context;
+    float timeSize;
+    float dateSize;
 
     private final Time time;
 
     private boolean shouldShowSeconds = true;
 
-    public static SimpleWatchFace newInstance(Context context) {
-        return new SimpleWatchFace(context, new Time());
+    public static SimpleWatchFace newInstance(Context context, float timeSize, float dateSize) {
+        return new SimpleWatchFace(context, new Time(),timeSize,dateSize);
     }
 
-    SimpleWatchFace(Context context, Time time) {
+    SimpleWatchFace(Context context, Time time,float timeSize,float dateSize) {
         mTextTimePaint=createTimeObject();
         mTextDatePaint=createDateObject();
         this.context=context;
+        this.timeSize=timeSize;
+        this.dateSize=dateSize;
         resources=context.getResources();
+        Log.i(TAG,(resources==null)?"resource is null":"resource="+resources.toString());
         this.time = time;
         calculateOffsets();
     }
@@ -61,26 +69,6 @@ public class SimpleWatchFace {
 
         String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
         canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
-    }
-
-    private float computeXOffset(String text, Paint paint, Rect watchBounds) {
-        float centerX = watchBounds.exactCenterX();
-        float timeLength = paint.measureText(text);
-        return centerX - (timeLength / 2.0f);
-    }
-
-    private float computeTimeYOffset(String timeText, Paint timePaint, Rect watchBounds) {
-        float centerY = watchBounds.exactCenterY();
-        Rect textBounds = new Rect();
-        timePaint.getTextBounds(timeText, 0, timeText.length(), textBounds);
-        int textHeight = textBounds.height();
-        return centerY + (textHeight / 2.0f);
-    }
-
-    private float computeDateYOffset(String dateText, Paint datePaint) {
-        Rect textBounds = new Rect();
-        datePaint.getTextBounds(dateText, 0, dateText.length(), textBounds);
-        return textBounds.height() + 10.0f;
     }
 
     public void setAntiAlias(boolean antiAlias) {

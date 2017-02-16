@@ -41,11 +41,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setShowSystemUiTime(false)
                     .build());
 
-
-
             timeTick = new Handler(Looper.myLooper());
             startTimerIfNecessary();
-            watchFace = SimpleWatchFace.newInstance(WatchFaceService.this);
+            watchFace = SimpleWatchFace.newInstance(getApplicationContext(),getResources().getDimension(R.dimen.time_size),getResources().getDimension(R.dimen.date_size));
 
 
         }
