@@ -68,10 +68,10 @@ public class SimpleWatchFace {
         canvas.drawColor(Color.parseColor("#42A5F5"));
 
         String timeText = String.format( TIME_FORMAT_WITHOUT_SECONDS, time.hour, time.minute);
-        canvas.drawText(timeText,bounds.centerX()-TimeOffsetX, TimeOffsetY, mTextTimePaint);
+        canvas.drawText(timeSize+"",bounds.centerX()-TimeOffsetX, TimeOffsetY, mTextTimePaint);
 
         String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
-        canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
+        canvas.drawText(dateSize+"",bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
 
         if(hightemp!=null && lowtemp!=null && weatherid!=null)
         {
@@ -109,7 +109,7 @@ public class SimpleWatchFace {
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         paint.setTypeface(NORMAL_TYPEFACE);
-        paint.setTextSize(timeSize);
+        Log.d(TAG,"time size = "+timeSize);
         return paint;
     }
 
@@ -118,7 +118,7 @@ public class SimpleWatchFace {
         Paint paint=new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(dateSize);
+        Log.d(TAG,"date size = "+dateSize);
         paint.setTypeface(NORMAL_TYPEFACE);
         return paint;
     }
