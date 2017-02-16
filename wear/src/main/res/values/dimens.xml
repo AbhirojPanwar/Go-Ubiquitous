@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<dimen name="time_size">40dp</dimen>
-    <dimen name="date_size">15dp</dimen>
+<dimen name="time_size">200dp</dimen>
+    <dimen name="date_size">150dp</dimen>
     <dimen name="temp_size">30dp</dimen>
 
     <dimen name="timeoffset_y">100dp</dimen>

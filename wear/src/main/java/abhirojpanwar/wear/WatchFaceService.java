@@ -16,10 +16,12 @@ import android.view.SurfaceHolder;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataItemBuffer;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
@@ -102,9 +104,24 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         };
 
+        ResultCallback<DataItemBuffer> OnConnectedResultCallback=new ResultCallback<DataItemBuffer>() {
+            @Override
+            public void onResult(DataItemBuffer dataItems) {
+                Log.d(TAG,"On Connected Result Callback "+dataItems.getCount());
+                for(DataItem item:dataItems)
+                {
+                    processItem(item);
+
+                }
+               dataItems.release();
+                invalidateIfNecessary();
+             }
+        };
+
 
         public void processItem(DataItem dataItem)
         {
+            Log.d(TAG,"processing Item");
          if(KEY_PATH==dataItem.getUri().getPath())
          {
              DataMap map=DataMapItem.fromDataItem(dataItem).getDataMap();
@@ -197,6 +214,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onConnected(@Nullable Bundle bundle) {
             Log.d(TAG, "connected GoogleAPI");
             Wearable.DataApi.addListener(googleApiClient, onDataChangedListener);
+            Wearable.DataApi.getDataItems(googleApiClient).setResultCallback(OnConnectedResultCallback);
         }
 
         @Override
