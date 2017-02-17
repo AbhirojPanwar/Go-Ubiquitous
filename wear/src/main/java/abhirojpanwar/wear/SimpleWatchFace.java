@@ -121,7 +121,7 @@ public class SimpleWatchFace {
             }
         }
         //For Debug, making a rough layout!!
-        else {
+        /*else {
             Log.d(TAG, "Drawing Demo");
 
             drawHighTemp(canvas, "22", bounds, checkForAmbient);
@@ -130,7 +130,7 @@ public class SimpleWatchFace {
                 drawLine(canvas, bounds);
                 drawWeatherIcon(canvas, 900, bounds, "22");
             }
-        }
+        }*/
     }
 
     private void drawLine(Canvas canvas,Rect bounds)

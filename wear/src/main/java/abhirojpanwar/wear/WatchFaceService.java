@@ -124,11 +124,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void processItem(DataItem dataItem)
         {
             Log.d(TAG,"processing Item"+"Path fetched is ="+dataItem.getUri().getPath());
-            if(KEY_PATH==dataItem.getUri().getPath())
+            if(KEY_PATH.equals(dataItem.getUri().getPath()))
          {
              DataMap map=DataMapItem.fromDataItem(dataItem).getDataMap();
              hightemp=map.getString(KEY_HIGH_TEMP);
+             int temporary=(int) Double.parseDouble(hightemp);
+             hightemp=temporary+"";
              lowtemp=map.getString(KEY_LOW_TEMP);
+             temporary=(int) Double.parseDouble(lowtemp);
+             lowtemp=temporary+"";
              weatherId=map.getInt(KEY_WEATHER_ID);
              Log.d(TAG,"Details fetched are "+hightemp+","+lowtemp+","+weatherId);
              invalidateIfNecessary();
