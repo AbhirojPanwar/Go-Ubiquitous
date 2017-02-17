@@ -2,7 +2,6 @@ package abhirojpanwar.wear;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,9 +25,9 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 
-//Add
-
 import java.util.concurrent.TimeUnit;
+
+//Add
 
 /**
  * Created by Abhiroj on 2/15/2017.
@@ -190,8 +189,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
-            watchFace.setAntiAlias(!inAmbientMode);
-            watchFace.setColor(inAmbientMode ? Color.GRAY : Color.WHITE);
             invalidate();
             startTimerIfNecessary();
         }

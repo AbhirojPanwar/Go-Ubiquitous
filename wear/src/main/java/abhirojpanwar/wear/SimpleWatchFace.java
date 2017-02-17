@@ -25,6 +25,7 @@ public class SimpleWatchFace {
     private static final String DATE_FORMAT = "%02d/%02d/%d";
 
 
+    Typeface BOLD_TYPEFACE=Typeface.create(Typeface.SANS_SERIF,Typeface.BOLD);
     Typeface NORMAL_TYPEFACE=Typeface.create(Typeface.SANS_SERIF,Typeface.NORMAL);
 
     Paint mTextTimePaint;
@@ -35,7 +36,6 @@ public class SimpleWatchFace {
     float TimeOffsetY;
     float DateOffSetX;
     float DateOffsetY;
-    float TempOffsetX;
     float TempOffsetY;
     Resources resources;
     Context context;
@@ -43,7 +43,6 @@ public class SimpleWatchFace {
     float dateSize;
     Canvas globalcanvas;
 
-    boolean ambient;
 
     private final Time time;
 
@@ -53,43 +52,58 @@ public class SimpleWatchFace {
     }
 
     SimpleWatchFace(Context context, Time time,float timeSize,float dateSize) {
-        mTextTimePaint=createTimeObject();
-        mTextDatePaint=createDateObject();
-        mTextWeatherPaint=createWeatherObject();
         this.context=context;
         this.timeSize=timeSize;
         this.dateSize=dateSize;
         resources=context.getResources();
         Log.i(TAG,(resources==null)?"resource is null":"resource="+resources.toString());
         this.time = time;
+    }
+
+    private void initializePaintObjects()
+    {
+        mTextTimePaint=createTimeObject();
+        mTextDatePaint=createDateObject();
+        mTextWeatherPaint=createWeatherObject();
         calculateOffsets();
     }
 
     private void configureForAmbientMode()
     {
         globalcanvas.drawColor(Color.BLACK);
-        mTextDatePaint.setColor(Color.WHITE);
+        mTextDatePaint.setColor(Color.GRAY);
         mTextDatePaint.setTypeface(Typeface.DEFAULT);
-        mTextTimePaint.setColor(Color.WHITE);
+        mTextTimePaint.setColor(Color.GRAY);
         mTextTimePaint.setTypeface(Typeface.DEFAULT);
         mTextWeatherPaint.setTypeface(Typeface.DEFAULT);
-        mTextWeatherPaint.setColor(Color.WHITE);
+        mTextWeatherPaint.setColor(Color.GRAY);
+        setAntiAlias(false); // Watchface is dependent on fewer pixels in Ambient mode, disabling anti-alias.
     }
 
     private void setConfigsIfVisible()
     {
         globalcanvas.drawColor(Color.parseColor("#42A5F5"));
+        setAntiAlias(true); // Watchface is visible, can restore anti-alias for paint objects back to normal
+        setColorForDateAndTime(Color.WHITE);
+        setColorForWeatherPaint(Color.WHITE);
+    }
+
+    private void setColorForWeatherPaint(int color)
+    {
+        mTextWeatherPaint.setColor(color);
     }
 
     public void draw(Canvas canvas, Rect bounds,String Hightemp,String Lowtemp,Integer weatherId,boolean checkForAmbient) {
         time.setToNow();
+        initializePaintObjects();
         globalcanvas=canvas;
         if(checkForAmbient)
         {
-            // If watch is in Ambient Mode, set all the configurations for it.
+            // If watch is in Ambient Mode, disable Ant-Alias and draw a black background.
             configureForAmbientMode();
         }
         else {
+            //Restore configs if visible
             setConfigsIfVisible();
         }
         String timeText = String.format( TIME_FORMAT_WITHOUT_SECONDS, time.hour, time.minute);
@@ -105,7 +119,7 @@ public class SimpleWatchFace {
             drawHighTemp(canvas,Hightemp,bounds);
             drawLowTemp(canvas,Lowtemp,bounds);
             if(!checkForAmbient)
-            drawWeatherIcon(canvas,weatherId,bounds,Hightemp);
+             drawWeatherIcon(canvas,weatherId,bounds,Hightemp);
         }
         //For Debug, making a rough layout!!
         else{
@@ -114,7 +128,7 @@ public class SimpleWatchFace {
             drawHighTemp(canvas,"22",bounds);
             drawLowTemp(canvas,"18",bounds);
             if(!checkForAmbient)
-            drawWeatherIcon(canvas,502,bounds,"22");
+             drawWeatherIcon(canvas,900,bounds,"22");
         }
     }
 
@@ -132,15 +146,14 @@ public class SimpleWatchFace {
     {
         float highTextSize =mTextWeatherPaint.measureText(Hightemp);
         float xOffset = bounds.centerX() - (highTextSize / 2);
-        mTextWeatherPaint.setColor(Color.BLACK);
+        mTextWeatherPaint.setTypeface(BOLD_TYPEFACE);
         canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
     }
 
     private void drawLowTemp(Canvas canvas,String Lowtemp,Rect bounds)
     {
         float highTextSize =mTextWeatherPaint.measureText(Lowtemp);
-        float xOffset = bounds.centerX() - (highTextSize / 2);
-        mTextWeatherPaint.setColor(Color.GRAY);
+        mTextWeatherPaint.setTypeface(NORMAL_TYPEFACE);
         canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
     }
 
@@ -148,9 +161,11 @@ public class SimpleWatchFace {
     public void setAntiAlias(boolean antiAlias) {
         mTextDatePaint.setAntiAlias(antiAlias);
         mTextTimePaint.setAntiAlias(antiAlias);
+        mTextWeatherPaint.setAntiAlias(antiAlias);
     }
 
-    public void setColor(int color) {
+
+    public void setColorForDateAndTime(int color) {
         mTextDatePaint.setColor(color);
         mTextTimePaint.setColor(color);
     }
@@ -167,27 +182,22 @@ public class SimpleWatchFace {
     Paint createTimeObject()
     {
         Paint paint=new Paint();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        Log.d(TAG,"time size = "+timeSize);
+        paint.setTextSize(resources.getDimension(R.dimen.time_size));
         return paint;
     }
 
     Paint createDateObject()
     {
         Paint paint=new Paint();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
-        Log.d(TAG,"date size = "+dateSize);
         paint.setTypeface(NORMAL_TYPEFACE);
+        paint.setTextSize(resources.getDimension(R.dimen.date_size));
         return paint;
     }
 
     Paint createWeatherObject(){
         Paint paint=new Paint();
-        paint.setAntiAlias(true);
-        paint.setTypeface(NORMAL_TYPEFACE);
+        paint.setTextSize(resources.getDimension(R.dimen.weather_size));
         return paint;
     }
 
