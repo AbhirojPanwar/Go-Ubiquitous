@@ -39,9 +39,6 @@ public class SimpleWatchFace {
     float timeSize;
     float dateSize;
 
-    String hightemp;
-    String lowtemp;
-    String weatherid;
     boolean ambient;
 
     private final Time time;
@@ -54,6 +51,7 @@ public class SimpleWatchFace {
     SimpleWatchFace(Context context, Time time,float timeSize,float dateSize) {
         mTextTimePaint=createTimeObject();
         mTextDatePaint=createDateObject();
+        mTextWeatherPaint=createWeatherObject();
         this.context=context;
         this.timeSize=timeSize;
         this.dateSize=dateSize;
@@ -73,13 +71,21 @@ public class SimpleWatchFace {
         String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
         canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
 
-        if(hightemp!=null && lowtemp!=null && weatherid!=null)
+        Log.d(TAG,"Current weather conditions="+Hightemp+","+Lowtemp+","+weatherId);
+        if(Hightemp!=null && Lowtemp!=null && weatherId!=null)
         {
             float highTextSize =mTextWeatherPaint.measureText(Hightemp);
             float xOffset = bounds.centerX() - (highTextSize / 2);
             canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
             canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
-
+        }
+        //For Debug
+        else{
+            Log.d(TAG,"Drawing Demo");
+            float highTextSize =mTextWeatherPaint.measureText("22");
+            float xOffset = bounds.centerX() - (highTextSize / 2);
+            canvas.drawText("22", xOffset, TempOffsetY, mTextWeatherPaint);
+            canvas.drawText("18", bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
         }
     }
 
@@ -127,7 +133,6 @@ public class SimpleWatchFace {
         Paint paint=new Paint();
         paint.setAntiAlias(true);
         paint.setTypeface(NORMAL_TYPEFACE);
-        paint.setTextSize(R.dimen.temp_size);
         return paint;
     }
 

@@ -91,11 +91,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
             @Override
             public void onDataChanged(DataEventBuffer dataEventBuffer) {
 
+
+                Log.d(TAG,"On Data Changed Stage 1 --> Count"+ dataEventBuffer.getCount());
                 for(DataEvent dataEvent:dataEventBuffer)
                 {
+                    Log.d(TAG,"On Data Changed Stage 2 --> Event Type"+ dataEvent.getType());
                     if(dataEvent.getType()==DataEvent.TYPE_CHANGED) {
                         DataItem dataItem = dataEvent.getDataItem();
-                        Log.d(TAG, dataEvent.toString());
+                        Log.d(TAG,"On Data Changed Stage 3 --> Data Event Details"+ dataEvent.toString());
                         processItem(dataItem);
                     }
                 }
@@ -121,13 +124,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         public void processItem(DataItem dataItem)
         {
-            Log.d(TAG,"processing Item");
-         if(KEY_PATH==dataItem.getUri().getPath())
+            Log.d(TAG,"processing Item"+"Path fetched is ="+dataItem.getUri().getPath());
+//         if(KEY_PATH==dataItem.getUri().getPath())
          {
              DataMap map=DataMapItem.fromDataItem(dataItem).getDataMap();
              hightemp=map.getString(KEY_HIGH_TEMP);
              lowtemp=map.getString(KEY_LOW_TEMP);
              weatherId=map.getString(KEY_WEATHER_ID);
+             Log.d(TAG,"Details fetched are "+hightemp+","+lowtemp+","+weatherId);
              invalidateIfNecessary();
          }
         }
