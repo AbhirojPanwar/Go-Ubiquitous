@@ -140,7 +140,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             super.onDraw(canvas, bounds);
-            watchFace.draw(canvas, bounds,hightemp,lowtemp,weatherId);
+            watchFace.draw(canvas, bounds,hightemp,lowtemp,weatherId,isInAmbientMode());
         }
 
 
