@@ -125,7 +125,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void processItem(DataItem dataItem)
         {
             Log.d(TAG,"processing Item"+"Path fetched is ="+dataItem.getUri().getPath());
-//         if(KEY_PATH==dataItem.getUri().getPath())
+            if(KEY_PATH==dataItem.getUri().getPath())
          {
              DataMap map=DataMapItem.fromDataItem(dataItem).getDataMap();
              hightemp=map.getString(KEY_HIGH_TEMP);

@@ -79,7 +79,9 @@ public class SimpleWatchFace {
         {
             float highTextSize =mTextWeatherPaint.measureText(Hightemp);
             float xOffset = bounds.centerX() - (highTextSize / 2);
+            mTextWeatherPaint.setColor(Color.BLACK);
             canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
+            mTextWeatherPaint.setColor(Color.GRAY);
             canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
 
             Drawable b = context.getResources().getDrawable(IconUtility.getSmallArtResourceIdForWeatherCondition(weatherId));
