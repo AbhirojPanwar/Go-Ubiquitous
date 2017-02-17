@@ -55,7 +55,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         String hightemp;
         String lowtemp;
-        String weatherId;
+        Integer weatherId;
 
 
         private final long TICK_PERIOD_MILLIS = TimeUnit.SECONDS.toMillis(1);
@@ -130,7 +130,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
              DataMap map=DataMapItem.fromDataItem(dataItem).getDataMap();
              hightemp=map.getString(KEY_HIGH_TEMP);
              lowtemp=map.getString(KEY_LOW_TEMP);
-             weatherId=map.getString(KEY_WEATHER_ID);
+             weatherId=map.getInt(KEY_WEATHER_ID);
              Log.d(TAG,"Details fetched are "+hightemp+","+lowtemp+","+weatherId);
              invalidateIfNecessary();
          }

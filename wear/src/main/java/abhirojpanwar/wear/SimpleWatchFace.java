@@ -2,11 +2,14 @@ package abhirojpanwar.wear;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -61,7 +64,7 @@ public class SimpleWatchFace {
         calculateOffsets();
     }
 
-    public void draw(Canvas canvas, Rect bounds,String Hightemp,String Lowtemp,String weatherId) {
+    public void draw(Canvas canvas, Rect bounds,String Hightemp,String Lowtemp,Integer weatherId) {
         time.setToNow();
         canvas.drawColor(Color.parseColor("#42A5F5"));
 
@@ -78,14 +81,30 @@ public class SimpleWatchFace {
             float xOffset = bounds.centerX() - (highTextSize / 2);
             canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
             canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
+
+            Drawable b = context.getResources().getDrawable(IconUtility.getSmallArtResourceIdForWeatherCondition(weatherId));
+            Bitmap icon = ((BitmapDrawable) b).getBitmap();
+            float scaledWidth = (mTextWeatherPaint.getTextSize() / icon.getHeight()) * icon.getWidth();
+            Bitmap weatherIcon = Bitmap.createScaledBitmap(icon, (int) scaledWidth, (int) mTextWeatherPaint.getTextSize(), true);
+            float iconXOffset = bounds.centerX() - ((highTextSize / 2) + weatherIcon.getWidth() + 30);
+            canvas.drawBitmap(weatherIcon, iconXOffset, TempOffsetY - weatherIcon.getHeight(), null);
         }
-        //For Debug
+        //For Debug, making a rough layout!!
         else{
             Log.d(TAG,"Drawing Demo");
             float highTextSize =mTextWeatherPaint.measureText("22");
             float xOffset = bounds.centerX() - (highTextSize / 2);
+            mTextWeatherPaint.setColor(Color.BLACK);
             canvas.drawText("22", xOffset, TempOffsetY, mTextWeatherPaint);
+            mTextWeatherPaint.setColor(Color.GRAY);
             canvas.drawText("18", bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
+
+            Drawable b = context.getResources().getDrawable(IconUtility.getSmallArtResourceIdForWeatherCondition(502));
+            Bitmap icon = ((BitmapDrawable) b).getBitmap();
+            float scaledWidth = (mTextWeatherPaint.getTextSize() / icon.getHeight()) * icon.getWidth();
+            Bitmap weatherIcon = Bitmap.createScaledBitmap(icon, (int) scaledWidth, (int) mTextWeatherPaint.getTextSize(), true);
+            float iconXOffset = bounds.centerX() - ((highTextSize / 2) + weatherIcon.getWidth() + 30);
+            canvas.drawBitmap(weatherIcon, iconXOffset, TempOffsetY - weatherIcon.getHeight(), null);
         }
     }
 
