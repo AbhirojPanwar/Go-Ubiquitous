@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.format.Time;
-import android.util.Log;
 
 /**
  * Created by Abhiroj on 2/15/2017.
@@ -53,7 +52,6 @@ public class SimpleWatchFace {
     SimpleWatchFace(Context context, Time time) {
         this.context=context;
         resources=context.getResources();
-        Log.i(TAG,(resources==null)?"resource is null":"resource="+resources.toString());
         this.time = time;
     }
 
@@ -79,7 +77,7 @@ public class SimpleWatchFace {
 
     private void setConfigsIfVisible()
     {
-        globalcanvas.drawColor(Color.parseColor("#42A5F5"));
+        globalcanvas.drawColor(Color.parseColor("#0288D1"));
         setAntiAlias(true); // Watchface is visible, can restore anti-alias for paint objects back to normal
         setColorForDateAndTime(Color.WHITE);
         setColorForWeatherPaint(Color.WHITE);
@@ -109,7 +107,6 @@ public class SimpleWatchFace {
         String dateText = String.format(DATE_FORMAT,Utility.getMonth(time.month + 1), time.monthDay, time.year);
         canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
 
-        Log.d(TAG,"Current weather conditions="+Hightemp+","+Lowtemp+","+weatherId);
         if(Hightemp!=null && Lowtemp!=null && weatherId!=null)
         {
 
@@ -120,17 +117,6 @@ public class SimpleWatchFace {
                 drawWeatherIcon(canvas, weatherId, bounds, Hightemp);
             }
         }
-        //For Debug, making a rough layout!!
-        /*else {
-            Log.d(TAG, "Drawing Demo");
-
-            drawHighTemp(canvas, "22", bounds, checkForAmbient);
-            drawLowTemp(canvas, "18", bounds, checkForAmbient);
-            if (!checkForAmbient) {
-                drawLine(canvas, bounds);
-                drawWeatherIcon(canvas, 900, bounds, "22");
-            }
-        }*/
     }
 
     private void drawLine(Canvas canvas,Rect bounds)
@@ -159,7 +145,8 @@ public class SimpleWatchFace {
     private void drawLowTemp(Canvas canvas,String Lowtemp,Rect bounds,boolean ambient)
     {
         float highTextSize =mTextWeatherPaint.measureText(Lowtemp);
-        if(!ambient) mTextWeatherPaint.setTypeface(NORMAL_TYPEFACE);
+        if(!ambient)
+            mTextWeatherPaint.setTypeface(NORMAL_TYPEFACE);
         canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
     }
 
