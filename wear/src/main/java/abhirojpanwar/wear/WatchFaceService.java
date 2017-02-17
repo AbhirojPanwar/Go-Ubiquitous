@@ -73,7 +73,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             timeTick = new Handler(Looper.myLooper());
             startTimerIfNecessary();
-            watchFace = SimpleWatchFace.newInstance(getApplicationContext(),getResources().getDimension(R.dimen.time_size),getResources().getDimension(R.dimen.date_size));
+            watchFace = SimpleWatchFace.newInstance(getApplicationContext());
             context=WatchFaceService.this;
             googleApiClient=new GoogleApiClient.Builder(context).addApi(Wearable.API).addOnConnectionFailedListener(this).addConnectionCallbacks(this).build();
 

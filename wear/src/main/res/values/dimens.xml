@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <dimen name="time_size">40dp</dimen>
-    <dimen name="date_size">12dp</dimen>
+    <dimen name="date_size">15dp</dimen>
     <dimen name="weather_size">30dp</dimen>
 
     <dimen name="timeoffset_y">80dp</dimen>
-    <dimen name="dateoffset_y">102dp</dimen>
-    <dimen name="weatheroffset_y">140dp</dimen>
+    <dimen name="dateoffset_y">105dp</dimen>
+    <dimen name="divideroffset_y">116dp</dimen>
+    <dimen name="weatheroffset_y">150dp</dimen>
 </resources>

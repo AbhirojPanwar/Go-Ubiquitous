@@ -22,7 +22,7 @@ public class SimpleWatchFace {
     private static final String TAG="SimpleWatchFaceClass";
 
     private static final String TIME_FORMAT_WITHOUT_SECONDS = "%02d:%02d";
-    private static final String DATE_FORMAT = "%02d/%02d/%d";
+    private static final String DATE_FORMAT = "%s %02d, %d";
 
 
     Typeface BOLD_TYPEFACE=Typeface.create(Typeface.SANS_SERIF,Typeface.BOLD);
@@ -37,24 +37,21 @@ public class SimpleWatchFace {
     float DateOffSetX;
     float DateOffsetY;
     float TempOffsetY;
+    float DividerOffsetY;
     Resources resources;
     Context context;
-    float timeSize;
-    float dateSize;
     Canvas globalcanvas;
 
 
     private final Time time;
 
 
-    public static SimpleWatchFace newInstance(Context context, float timeSize, float dateSize) {
-        return new SimpleWatchFace(context, new Time(),timeSize,dateSize);
+    public static SimpleWatchFace newInstance(Context context) {
+        return new SimpleWatchFace(context, new Time());
     }
 
-    SimpleWatchFace(Context context, Time time,float timeSize,float dateSize) {
+    SimpleWatchFace(Context context, Time time) {
         this.context=context;
-        this.timeSize=timeSize;
-        this.dateSize=dateSize;
         resources=context.getResources();
         Log.i(TAG,(resources==null)?"resource is null":"resource="+resources.toString());
         this.time = time;
@@ -109,51 +106,60 @@ public class SimpleWatchFace {
         String timeText = String.format( TIME_FORMAT_WITHOUT_SECONDS, time.hour, time.minute);
         canvas.drawText(timeText,bounds.centerX()-TimeOffsetX, TimeOffsetY, mTextTimePaint);
 
-        String dateText = String.format(DATE_FORMAT, time.monthDay, (time.month + 1), time.year);
+        String dateText = String.format(DATE_FORMAT,Utility.getMonth(time.month + 1), time.monthDay, time.year);
         canvas.drawText(dateText,bounds.centerX()-DateOffSetX, DateOffsetY, mTextDatePaint);
 
         Log.d(TAG,"Current weather conditions="+Hightemp+","+Lowtemp+","+weatherId);
         if(Hightemp!=null && Lowtemp!=null && weatherId!=null)
         {
 
-            drawHighTemp(canvas,Hightemp,bounds);
-            drawLowTemp(canvas,Lowtemp,bounds);
-            if(!checkForAmbient)
-             drawWeatherIcon(canvas,weatherId,bounds,Hightemp);
+            drawHighTemp(canvas,Hightemp,bounds,checkForAmbient);
+            drawLowTemp(canvas,Lowtemp,bounds,checkForAmbient);
+            if(!checkForAmbient) {
+                drawLine(canvas, bounds);
+                drawWeatherIcon(canvas, weatherId, bounds, Hightemp);
+            }
         }
         //For Debug, making a rough layout!!
-        else{
-            Log.d(TAG,"Drawing Demo");
+        else {
+            Log.d(TAG, "Drawing Demo");
 
-            drawHighTemp(canvas,"22",bounds);
-            drawLowTemp(canvas,"18",bounds);
-            if(!checkForAmbient)
-             drawWeatherIcon(canvas,900,bounds,"22");
+            drawHighTemp(canvas, "22", bounds, checkForAmbient);
+            drawLowTemp(canvas, "18", bounds, checkForAmbient);
+            if (!checkForAmbient) {
+                drawLine(canvas, bounds);
+                drawWeatherIcon(canvas, 900, bounds, "22");
+            }
         }
+    }
+
+    private void drawLine(Canvas canvas,Rect bounds)
+    {
+        canvas.drawLine(bounds.centerX()-25,DividerOffsetY,bounds.centerX()+25,DividerOffsetY,mTextWeatherPaint);
     }
 
     private void drawWeatherIcon(Canvas canvas,Integer weatherId,Rect bounds,String Hightemp)
     {
         float highTextSize =mTextWeatherPaint.measureText(Hightemp);
-        Drawable b = context.getResources().getDrawable(IconUtility.getSmallArtResourceIdForWeatherCondition(weatherId));
+        Drawable b = context.getResources().getDrawable(Utility.getSmallArtResourceIdForWeatherCondition(weatherId));
         Bitmap icon = ((BitmapDrawable) b).getBitmap();
         float scaledWidth = (mTextWeatherPaint.getTextSize() / icon.getHeight()) * icon.getWidth();
         Bitmap weatherIcon = Bitmap.createScaledBitmap(icon, (int) scaledWidth, (int) mTextWeatherPaint.getTextSize(), true);
         float iconXOffset = bounds.centerX() - ((highTextSize / 2) + weatherIcon.getWidth() + 30);
-        canvas.drawBitmap(weatherIcon, iconXOffset, TempOffsetY - weatherIcon.getHeight(), null);
+        canvas.drawBitmap(weatherIcon, iconXOffset, TempOffsetY - weatherIcon.getHeight()+10, null);
     }
-    private void drawHighTemp(Canvas canvas,String Hightemp,Rect bounds)
+    private void drawHighTemp(Canvas canvas,String Hightemp,Rect bounds,boolean ambient)
     {
         float highTextSize =mTextWeatherPaint.measureText(Hightemp);
         float xOffset = bounds.centerX() - (highTextSize / 2);
-        mTextWeatherPaint.setTypeface(BOLD_TYPEFACE);
+        if(!ambient)mTextWeatherPaint.setTypeface(BOLD_TYPEFACE);
         canvas.drawText(Hightemp, xOffset, TempOffsetY, mTextWeatherPaint);
     }
 
-    private void drawLowTemp(Canvas canvas,String Lowtemp,Rect bounds)
+    private void drawLowTemp(Canvas canvas,String Lowtemp,Rect bounds,boolean ambient)
     {
         float highTextSize =mTextWeatherPaint.measureText(Lowtemp);
-        mTextWeatherPaint.setTypeface(NORMAL_TYPEFACE);
+        if(!ambient) mTextWeatherPaint.setTypeface(NORMAL_TYPEFACE);
         canvas.drawText(Lowtemp, bounds.centerX() + (highTextSize / 2) + 20, TempOffsetY, mTextWeatherPaint);
     }
 
@@ -173,10 +179,11 @@ public class SimpleWatchFace {
 
     void calculateOffsets(){
         TimeOffsetX=mTextTimePaint.measureText("12:60")/2;
-        DateOffSetX=mTextDatePaint.measureText("14/02/2017")/2;
+        DateOffSetX=mTextDatePaint.measureText("JUL 14 2015")/2;
         TimeOffsetY=resources.getDimension(R.dimen.timeoffset_y);
         DateOffsetY=resources.getDimension(R.dimen.dateoffset_y);
         TempOffsetY=resources.getDimension(R.dimen.weatheroffset_y);
+        DividerOffsetY=resources.getDimension(R.dimen.divideroffset_y);
     }
 
     Paint createTimeObject()
